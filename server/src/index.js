@@ -1,8 +1,8 @@
-import express from 'express';
+const express = require('express');
 
 const app = express();
 
-app.get('/requisitos', () => {
+app.get('/', () => {
     console.log('Acessou os requisitos');
     
 })
