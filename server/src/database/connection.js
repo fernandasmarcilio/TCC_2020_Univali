@@ -1,5 +1,5 @@
-import knex from 'knex';
-import path from 'path';
+const knex = require('knex');
+const path = require('path');
 
 const db = knex({
     client: 'sqlite3',
@@ -9,4 +9,4 @@ const db = knex({
     useNullAsDefault: true,
 })
 
-export default db;
+module.exports = db;
