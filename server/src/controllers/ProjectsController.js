@@ -12,6 +12,7 @@ module.exports = {
     },
 
     async create(request, response) {
+        // ao criar um projeto, adicionar todos os requisitos pre-cadastrado nele?
         const { nome, descricao, id_usuario } = request.body;
 
         await db('projetos').insert({
@@ -24,11 +25,10 @@ module.exports = {
     },
 
     async delete(request, response) {
-        // ao deletar o projeto, tem que deletar todas os requisitos, metricas e metodos
-        // que esta ligado a este projeto?
+        // ao deletar o projeto, tem que deletar os requisitos que esta ligado a este projeto?
         const { id } = request.params;
 
-        await dbConnection('projetos')
+        await db('projetos')
             .where('id', id)
             .delete(); 
 

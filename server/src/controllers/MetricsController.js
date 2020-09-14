@@ -22,7 +22,7 @@ module.exports = {
     async delete(request, response) {
         const { id } = request.params;
 
-        await dbConnection('metricas')
+        await db('metricas')
             .where('id', id)
             .delete(); 
 

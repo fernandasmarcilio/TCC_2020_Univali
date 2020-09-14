@@ -21,11 +21,11 @@ module.exports = {
 
     async delete(request, response) {
         const { id } = request.params;
-
-        await dbConnection('requisitos')
+        
+        await db('requisitos')
             .where('id', id)
             .delete(); 
 
-        return response.status(204).send();
+        return response.status(200).send();
     }
 }

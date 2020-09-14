@@ -35,7 +35,7 @@ module.exports = {
     async delete(request, response) {
         const { id } = request.params;
 
-        await dbConnection('usuario')
+        await db('usuario')
             .where('id', id)
             .delete(); 
 
