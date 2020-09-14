@@ -1,11 +1,24 @@
 const db = require('../database/connection');
+const { delete } = require('./ProjectsController');
 
 module.exports = {
-    //index - retorna uma lista
-    //delete
+    async findUser(request, response) {
+        const { usuario, senha } = request.query;
+        //senha cript
+        const id_usuario = await db('usuario')
+                            .where({
+                                usuario,
+                                senha
+                            })
+                            .select('id');
+
+        return response.json( id_usuario );
+    },
+
     async create(request, response) {
         const { nome, email, usuario, senha } = request.body;
         // verificar se tem email ou usuario
+        // se ter, retorna erro, se nao cria
         // cript senha
 
         //2h
@@ -18,5 +31,15 @@ module.exports = {
         })
     
         return response.send();
+    },
+
+    async delete(request, response) {
+        const { id } = request.params;
+
+        await dbConnection('usuario')
+            .where('id', id)
+            .delete(); 
+
+        return response.status(204).send();
     }
 }
