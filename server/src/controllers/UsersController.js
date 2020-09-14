@@ -1,9 +1,8 @@
 const db = require('../database/connection');
-const { delete } = require('./ProjectsController');
 
 module.exports = {
     async findUser(request, response) {
-        const { usuario, senha } = request.query;
+        const { usuario, senha } = request.body;
         //senha cript
         const id_usuario = await db('usuario')
                             .where({
