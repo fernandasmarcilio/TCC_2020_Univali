@@ -4,6 +4,7 @@ const UsersController = require('./controllers/UsersController');
 const ProjectsController = require('./controllers/ProjectsController');
 const RequirementsController = require('./controllers/RequirementsController');
 const MetricsController = require('./controllers/MetricsController');
+const MethodsController = require('./controllers/MethodsController');
 const RequirementMetricsController = require('./controllers/RequirementMetricsController');
 
 const routes = express.Router();
@@ -23,6 +24,10 @@ routes.delete('/requirements/:id', RequirementsController.delete);
 routes.get('/metrics', MetricsController.index);
 routes.post('/metrics', MetricsController.create);
 routes.delete('/metrics/:id', MetricsController.delete);
+
+routes.get('/methods', MethodsController.index);
+routes.post('/methods', MethodsController.create);
+routes.delete('/methods/:id', MethodsController.delete);
 
 routes.get('/requirementmetrics', RequirementMetricsController.index);
 routes.post('/requirementmetrics', RequirementMetricsController.create);

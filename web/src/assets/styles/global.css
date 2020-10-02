@@ -1,7 +1,15 @@
 :root {
-    font-size: 60%;
-
     --color-background: #F0F0F7;
+    --color-primary-light: #FFF;
+    --color-primary: #536DFE;
+    --color-primary-dark: #FFF;
+    --color-secondary-light: #000;
+    --color-secondary: #000;
+    --color-secondary-dark: #000;
+    --color-text: #333;
+    --color-text-in-primary: #F0F0F7;
+    --color-button-text: #F0F0F7;
+    --color-border: #dcdce6;
 }
 
 * {
@@ -20,7 +28,6 @@ body {
 
 #root {
     display: flex;
-    align-items: center;
     justify-content: center;
 }
 
@@ -33,7 +40,15 @@ textarea {
 
 .container {
     width: 90vw;
-    max-width: 700px;
+}
+
+a {
+    text-decoration: none;
+    color: var(--color-text);
+}
+
+a: hover {
+    background: #eee;
 }
 
 @media(min-width: 700px) {

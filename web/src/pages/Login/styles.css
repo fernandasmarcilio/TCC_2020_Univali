@@ -1,0 +1,139 @@
+#page-login {
+    width: 100vw;
+    height: 100vh;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.logo-container img {
+    height: 10rem;
+}
+
+.hero-image {
+    width: 100%;
+}
+
+.logo-container {
+    text-align: left;
+    margin-bottom: 3.2rem;
+}
+
+.logo-container h2 {
+    font-weight: 500;
+    font-size: 2rem;
+    line-height: 4.6rem;
+    margin-top: 0.8rem;
+    color: var(--color-text);
+}
+
+.login-container {
+    display: flex;
+    justify-content: center;
+    margin: 3.2rem 0;
+}
+
+.login-form-container {
+    display: flex;
+    justify-content: center;
+    margin: 3.2rem 0;
+    flex-direction: column;
+    width: 100%;
+}
+
+.login-form-container input {
+    width: 100%;
+    height: 6.4rem;
+    color: var(--color-text);
+    border: 1px solid var(--color-border);
+    border-radius: 0.8rem;
+    padding: 0 3.0rem;
+    font: 700 2.0rem Archivo;
+    margin-bottom: 1rem;
+}
+
+.login-form-container a {
+    width: 100%;
+    height: 6.4rem;
+    border-radius: 0.8rem;
+    font: 700 2.0rem Archivo;
+    text-decoration: none;
+    background: var(--color-primary);
+    color: var(--color-button-text);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: filter 0.2s;
+}
+
+.login-form-container a:hover {
+    filter: brightness(90%);
+}
+
+.register-container {
+    font-size: 1.8rem;
+    font: 700 2.0rem Archivo;
+    color: var(--color-text);
+
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+}
+
+.register-container a {
+    text-decoration: none;
+    color: var(--color-primary);
+    margin-left: 1rem;
+    transition: filter 0.2s;
+}
+
+.register-container a:hover {
+    filter: brightness(90%);
+}
+
+@media(min-width: 1100px) {
+    #page-login-content {
+        max-width: 1100px;
+
+        display: grid;
+        grid-template-rows: 300px 1fr;
+        grid-template-columns: 1fr 1fr;
+        grid-template-areas: 
+            "logo hero"
+            "form hero"
+        ;
+    }
+
+    .logo-container {
+        grid-area: logo;
+
+        align-self: center;
+        margin: 0;
+    }
+
+    .logo-container h2 {
+        text-align: initial;
+        font-size: 3.6rem;
+    }
+
+    .logo-container img {
+        align-self: start;
+    }
+
+    .hero-image {
+        grid-area: hero;
+
+        justify-self: end;
+    }
+
+    .login-form-container {
+        grid-area: form;
+
+        justify-content: flex-start;
+    }
+
+    .login-form-container input, .login-form-container a{
+        font-size: 2.4rem;
+    }
+}
