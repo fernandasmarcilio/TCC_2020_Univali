@@ -7,7 +7,7 @@ import { Add } from '@material-ui/icons';
 
 import './styles.css';
 
-function Header({title}) {
+function Header({title, children}) {
   return (
       <>
         <header className="header">
@@ -19,13 +19,15 @@ function Header({title}) {
 
         <section className="title">
             <h1>{title}</h1>
-            <Button
-            variant="contained"
-            color="primary"
-            startIcon={<Add />}
-            >
-            Adicionar
-            </Button>
+            {children ? children : (
+                <Button
+                variant="contained"
+                color="primary"
+                startIcon={<Add />}
+                >
+                Adicionar
+                </Button>
+            )}
         </section>
     </>
   );
