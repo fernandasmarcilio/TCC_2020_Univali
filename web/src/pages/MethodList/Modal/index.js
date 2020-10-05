@@ -4,11 +4,10 @@ import TextField from '@material-ui/core/TextField';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
-import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 
 
-function Modal({ open, handleClickOpenModal, handleOnChangeInput, form }) {
+function Modal({ open, handleClickOpenModal, handleOnChangeInput, form, handleOnSubmit }) {
     return (
         <>
             <Dialog 
@@ -42,10 +41,10 @@ function Modal({ open, handleClickOpenModal, handleOnChangeInput, form }) {
                     />
                 </DialogContent>
                 <DialogActions>
-                    <Button onClick={handleClickOpenModal} color="secondary">
+                    <Button onClick={handleClickOpenModal} color="secondary" variant="contained">
                         Cancelar
           </Button>
-                    <Button onClick={handleClickOpenModal} color="primary" variant="contained">
+                    <Button onClick={handleOnSubmit} color="primary" variant="contained">
                         Adicionar
           </Button>
                 </DialogActions>

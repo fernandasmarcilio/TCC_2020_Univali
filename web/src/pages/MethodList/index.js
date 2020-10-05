@@ -5,7 +5,6 @@ import Header from '../../component/Header';
 import TableComponent from '../../component/TableComponent';
 import Modal from './Modal';
 import { Button } from '@material-ui/core';
-import TextField from '@material-ui/core/TextField';
 
 import api from '../../services/api';
 
@@ -20,8 +19,6 @@ function MethodList() {
 
     const handleClickOpenModal = () => {
         setOpenModal(!openModal);
-        console.log(form);
-
     };
 
     const handleOnChangeInput = (e) => {
@@ -32,11 +29,20 @@ function MethodList() {
         })
     };
 
-    const handleOnSubmit = () => {
-        api.post('methods', { form })
-        .then(response => {
-            console.log(response);
-        })
+    const handleOnSubmit = async () => {
+        const data = {
+            nome: form.name,
+            descricao: form.description
+        }
+
+        await api.post('methods', { data });
+
+        await api.get('methods')
+            .then(response => {
+                setMethods(response.data);
+            })
+
+        handleClickOpenModal();
     };
 
     useEffect(() => {
@@ -53,16 +59,17 @@ function MethodList() {
                 handleClickOpenModal={handleClickOpenModal}
                 handleOnChangeInput={handleOnChangeInput}
                 form={form}
+                handleOnSubmit={handleOnSubmit}
             />
 
-            <Header title="Métodos de Usabilidade">
+            <Header title="Métodos de Avaliação de Usabilidade">
                 <Button
                     variant="contained"
                     color="primary"
                     onClick={handleClickOpenModal}
                 >
                     Adicionar
-            </Button>
+                </Button>
             </Header>
             <TableComponent listItems={methods} route="methods" />
 
