@@ -15,7 +15,7 @@ module.exports = {
     },
 
     async create(request, response) {
-        const { nome, email, usuario, senha } = request.body;
+        const { nome, email, usuario, senha } = request.body.data;
         // verificar se tem email ou usuario
         // se ter, retorna erro, se nao cria
         // cript senha

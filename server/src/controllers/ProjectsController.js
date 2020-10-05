@@ -13,7 +13,7 @@ module.exports = {
 
     async create(request, response) {
         // ao criar um projeto, adicionar todos os requisitos pre-cadastrado nele?
-        const { nome, descricao, id_usuario } = request.body;
+        const { nome, descricao, id_usuario } = request.body.data;
 
         await db('projetos').insert({
             nome, 

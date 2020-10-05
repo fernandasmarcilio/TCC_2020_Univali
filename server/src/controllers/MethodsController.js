@@ -9,7 +9,7 @@ module.exports = {
     },
 
     async create(request, response) {
-        const { nome, descricao } = request.body;
+        const { nome, descricao } = request.body.data;
 
         await db('metodos').insert({
             nome, 
