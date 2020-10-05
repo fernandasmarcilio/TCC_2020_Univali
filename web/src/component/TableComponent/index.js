@@ -1,7 +1,5 @@
 import React from 'react';
 
-import { Link } from 'react-router-dom';
-
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
@@ -23,7 +21,7 @@ function TableComponent({listItems, route}) {
         </TableHead>
         <TableBody>
             {listItems.map((item) => (
-                <TableRow hover key={item.id} component={Link} to={`/${route}/${item.id}`}>
+                <TableRow hover key={item.id}>
                     <TableCell>{item.nome}</TableCell>
                     <TableCell>{item.descricao}</TableCell>
                     <TableCell align="right">Ações</TableCell>
