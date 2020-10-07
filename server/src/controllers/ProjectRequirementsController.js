@@ -13,7 +13,7 @@ module.exports = {
     },
 
     async create(request, response) {
-        const { id_projeto, id_requisito } = request.body;
+        const { id_projeto, id_requisito } = request.body.data;
 
         await db('projeto_requisito').insert({
             id_projeto, 

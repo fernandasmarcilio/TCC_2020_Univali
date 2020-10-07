@@ -11,12 +11,14 @@ module.exports = {
     async create(request, response) {
         const { nome, descricao } = request.body.data;
 
-        await db('requisitos').insert({
+        const idArray = await db('requisitos').insert({
             nome, 
             descricao
-        })
+        });
+
+        const id = idArray[0];
     
-        return response.status(201).send();
+        return response.status(201).send({ id });
     },
 
     async delete(request, response) {

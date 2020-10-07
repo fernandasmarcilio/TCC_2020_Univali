@@ -2,31 +2,36 @@ const db = require('../database/connection');
 
 module.exports = {
     async findUser(request, response) {
-        const { usuario, senha } = request.body;
-        //senha cript
-        const id_usuario = await db('usuario')
-                            .where({
-                                usuario,
-                                senha
-                            })
+        const { usuario } = request.params;
+
+        let id_usuario = await db('usuario')
+                            .where({usuario})
                             .select('id');
 
-        return response.json( id_usuario );
+        if(id_usuario.length === 0) {
+            id_usuario = await db('usuario').insert({
+                nome: "", 
+                email: "", 
+                usuario, 
+                senha: ""
+            })
+
+            id_usuario = id_usuario[0];
+        } else {
+            id_usuario = id_usuario[0].id;
+        }
+
+        return response.status(200).json({ id: id_usuario});
     },
 
     async create(request, response) {
-        const { nome, email, usuario, senha } = request.body.data;
-        // verificar se tem email ou usuario
-        // se ter, retorna erro, se nao cria
-        // cript senha
-
-        //2h
+        const { usuario } = request.body.data;
     
         await db('usuario').insert({
-            nome, 
-            email, 
+            nome: "", 
+            email: "", 
             usuario, 
-            senha
+            senha: ""
         })
     
         return response.send();

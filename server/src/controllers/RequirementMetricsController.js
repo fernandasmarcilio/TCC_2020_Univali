@@ -15,11 +15,11 @@ module.exports = {
     async create(request, response) {
         const { id_requisito, id_metrica } = request.body;
 
-        await db('requisito_metrica').insert({
+        const id = await db('requisito_metrica').insert({
             id_requisito, 
             id_metrica
         })
-    
+        
         return response.status(201).send();
     },
 
