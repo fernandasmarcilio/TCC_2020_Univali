@@ -8,7 +8,9 @@ import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
 
-function TableComponent({listItems, route}) {
+import Actions from '../Actions';
+
+function TableComponent({listItems, routeView}) {
   return (
         <TableContainer component={Paper}>
         <Table aria-label="simple table">
@@ -24,7 +26,9 @@ function TableComponent({listItems, route}) {
                 <TableRow hover key={item.id}>
                     <TableCell>{item.nome}</TableCell>
                     <TableCell>{item.descricao}</TableCell>
-                    <TableCell align="right">Ações</TableCell>
+                    <TableCell align="right">
+                        <Actions routeView={routeView} idProject={item.id}/>
+                    </TableCell>
                 </TableRow>
             ))}
         </TableBody>
