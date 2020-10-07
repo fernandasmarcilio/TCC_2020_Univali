@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 
 import clsx from 'clsx';
-import { makeStyles } from '@material-ui/core/styles';
+import { makeStyles, withStyles } from '@material-ui/core/styles';
 import Drawer from '@material-ui/core/Drawer';
 import List from '@material-ui/core/List';
 import Divider from '@material-ui/core/Divider';
@@ -11,6 +11,8 @@ import IconButton from '@material-ui/core/IconButton';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
+import Tooltip from '@material-ui/core/Tooltip';
+import Fade from '@material-ui/core/Fade';
 
 import { FolderOpen, Subject, BarChart, PlaylistAddCheck, ChevronLeft, ChevronRight } from '@material-ui/icons';
 
@@ -75,8 +77,17 @@ const useStyles = makeStyles((theme) => ({
     content: {
         flexGrow: 1,
         padding: theme.spacing(3),
-    }
+    },
 }));
+
+const LightTooltip = withStyles((theme) => ({
+    tooltip: {
+      backgroundColor: '#fff',
+      color: '#333',
+      boxShadow: theme.shadows[1],
+      fontSize: 11,
+    },
+}))(Tooltip);
 
 
 const listItemMenu = [
@@ -117,10 +128,12 @@ function Menu() {
                 <Divider />
                 <List>
                     {listItemMenu.map((item, index) => (
-                        <ListItem button key={item.id} component={Link} to={item.route}>
-                            <ListItemIcon fontSize="large">{item.icon}</ListItemIcon>
-                            <ListItemText primary={item.name} />
-                        </ListItem>
+                        <LightTooltip title={item.name}  placement="top-end" key={item.id} TransitionComponent={Fade}>
+                            <ListItem button component={Link} to={item.route}>
+                                <ListItemIcon fontSize="large">{item.icon}</ListItemIcon>
+                                <ListItemText primary={item.name} />
+                            </ListItem>
+                        </LightTooltip >
                     ))}
                 </List>
             </Drawer>
