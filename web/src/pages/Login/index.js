@@ -1,13 +1,34 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
+import React, { useState } from 'react';
+import { useHistory } from 'react-router-dom';
 
 import './styles.css';
 
 import logoImg from '../../assets/images/argeux_logo.svg';
-import logingImg from '../../assets/images/login.svg';
+import backgroundImg from '../../assets/images/argeux_background.svg';
 
+import TextField from '@material-ui/core/TextField';
+import Button from '@material-ui/core/Button';
+
+import api from '../../services/api';
 
 function Login() {
+    const history = useHistory();
+    const [user, setUser] = useState('');
+
+    const handleOnChangeInput = (e) => {
+        const { value } = e.target;
+        setUser(value)
+    };
+
+    const handleOnSubmit = async () => {
+        await api.get(`users/${user}`)
+            .then(response => {
+                const {id } = response.data;
+                localStorage.setItem('user', id);
+                history.push("/projects")
+        });
+    };
+
     return (
         <div id="page-login">
             <div id="page-login-content" className="container">
@@ -17,27 +38,33 @@ function Login() {
                 </div>
 
                 <img
-                    src={logingImg}
-                    alt="Pessoas fazendo checklist enquanto olham um celular"
+                    src={backgroundImg}
+                    alt="Idoso sentado no sofá usando um celular"
                     className="hero-image"
                 />
 
                 <div className="form">
                     <form action="" className="login-form-container">
-                        <Link to="/projects">Começar </Link>
-                    </form>
-                    {/* <form action="" className="login-form-container">
-                        <input placeholder="Usuario" />
-                        <input placeholder="Senha" />
-                        <Link to="/projects">Entrar </Link>
-                    </form>
+                        <TextField
+                            autoFocus
+                            margin="dense"
+                            label="Usuário"
+                            variant="outlined"
+                            fullWidth
+                            name="user"
+                            value={user}
+                            onChange={handleOnChangeInput}
+                        />
 
-                    <div className="register-container">
-                        Não possui cadastro?
-                        <a href="/register">
-                            Cadastra-se aqui
-                        </a>
-                    </div> */}
+                        <Button
+                            onClick={handleOnSubmit}
+                            color="primary"
+                            variant="contained"
+                            size="large"
+                        >
+                            Entrar
+                        </Button>
+                    </form>
                 </div>
             </div>
         </div>
