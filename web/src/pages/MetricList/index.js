@@ -43,20 +43,19 @@ function MetricList() {
     }
 
     const response = await api.post('metrics', { data });
+    const { id } = response.data;
 
     await api.get('metrics')
       .then(response => {
           setMetrics(response.data);
       })
 
-    const { id } = response.data;
-
-    methodsSelected.forEach((method) => {
+    methodsSelected.forEach(async (method) => {
       console.log(id, method);
-      // const response = await api.post('metricsMethods', { 
-      //   id_metric: id,
-      //   id_method: method
-      // });
+      await api.post('metricmethods', { 
+        id_metrica: id,
+        id_metodo: method
+      });
     })
 
     handleClickOpenModal();
@@ -95,7 +94,7 @@ function MetricList() {
           onClick={handleClickOpenModal}
         >
           Adicionar
-                </Button>
+        </Button>
       </Header>
       <TableComponent listItems={metrics} route="metrics" />
 

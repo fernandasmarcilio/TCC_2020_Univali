@@ -24,8 +24,8 @@ function Modal({
   handleClickOpenModal, 
   form, 
   handleOnChangeInput, 
-  methodsSelected,
-  methods, 
+  metricsSelected,
+  metrics, 
   handleChangeSelect,
   handleOnSubmit
  }) {
@@ -41,7 +41,7 @@ function Modal({
         fullWidth={true}
         maxWidth="md"
       >
-        <DialogTitle id="form-dialog-title">Adicionar métricas</DialogTitle>
+        <DialogTitle id="form-dialog-title">Adicionar requisitos de usabilidade</DialogTitle>
         <DialogContent>
           <TextField
             autoFocus
@@ -64,15 +64,15 @@ function Modal({
           />
 
           <FormControl variant="outlined" className={classes.formControl}>
-            <InputLabel>Métodos de Avaliação de Usabilidade</InputLabel>
+            <InputLabel>Métricas</InputLabel>
             <Select
               multiple
-              value={methodsSelected}
+              value={metricsSelected}
               onChange={handleChangeSelect}
             >
-              {methods.map((method) => (
-                <MenuItem key={method.id} value={method.id} name={method.nome}>
-                  {method.nome}
+              {metrics.map((metric) => (
+                <MenuItem key={metric.id} value={metric.id} name={metric.nome}>
+                  {metric.nome}
                 </MenuItem>
               ))}
             </Select>
