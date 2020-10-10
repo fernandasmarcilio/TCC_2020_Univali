@@ -2,13 +2,20 @@ const db = require('../database/connection');
 
 module.exports = {
     async index(request, response) {
-        const { id_usuario } = request.query;
+        const { id_usuario, id_projeto } = request.query;
 
-        const projects = await db('projetos')
-                            .where('id_usuario', id_usuario)
-                            .select('*');
+        const projects = !id_projeto ? 
+            await db('projetos')
+                .where('id_usuario', id_usuario)
+                .select('*')
+            :
+            await db('projetos')
+            .where('id_usuario', id_usuario)
+            .where('id', id_projeto)
+            .select('*')
+        
 
-        return response.json( projects );
+        return response.status(200).json( projects );
     },
 
     async create(request, response) {
