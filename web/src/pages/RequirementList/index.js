@@ -3,11 +3,9 @@ import React, { useState, useEffect } from 'react';
 import PageDefault from '../PageDefault';
 import Header from '../../component/Header';
 import TableComponent from '../../component/TableComponent';
-import Modal from './Modal';
+import Modal from '../../component/Modal';
 
 import api from '../../services/api';
-
-import { Button } from '@material-ui/core';
 
 function RequirementList() {
   const [ requirements, setRequirements ] = useState([]);
@@ -53,6 +51,11 @@ function RequirementList() {
       });
     });
 
+    api.get('requirements')
+    .then(response => {
+      setRequirements(response.data);
+    })
+
     handleClickOpenModal();
   };
 
@@ -72,26 +75,24 @@ function RequirementList() {
 
   return (
     <PageDefault>
-
-      <Modal 
+      <Modal
         open={openModal}
         form={form}
-        metrics={metrics}
-        metricsSelected={metricsSelected}
+        haveInputSelect={true}
+        items={metrics}
+        itemsSelected={metricsSelected}
         handleClickOpenModal={handleClickOpenModal}
         handleOnChangeInput={handleOnChangeInput}
         handleChangeSelect={handleChangeSelect}
         handleOnSubmit={handleOnSubmit}
+        title={"Adicionar requisitos de usabilidade"}
+        titleSelectLabel={"Métricas"}
       />
-      <Header title="Requisitos de Usabilidade">
-        <Button
-          variant="contained"
-          color="primary"
-          onClick={handleClickOpenModal}
-        >
-          Adicionar
-        </Button>
-      </Header>
+
+      <Header 
+        title="Requisitos de Usabilidade"
+        handleClickOnButtonAdd={handleClickOpenModal}
+      />
       <TableComponent listItems={requirements} route="requirements" />
 
     </PageDefault>

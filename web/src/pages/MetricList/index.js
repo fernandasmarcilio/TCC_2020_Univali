@@ -3,11 +3,9 @@ import React, { useState, useEffect } from 'react';
 import PageDefault from '../PageDefault';
 import Header from '../../component/Header';
 import TableComponent from '../../component/TableComponent';
+import Modal from '../../component/Modal';
 
 import api from '../../services/api';
-import Modal from './Modal';
-
-import { Button } from '@material-ui/core';
 
 function MetricList() {
   const [metrics, setMetrics] = useState([]);
@@ -27,8 +25,8 @@ function MetricList() {
   const handleOnChangeInput = (e) => {
     const { name, value } = e.target;
     setForm({
-        ...form,
-        [name]: value
+      ...form,
+      [name]: value
     })
   }
 
@@ -47,12 +45,12 @@ function MetricList() {
 
     await api.get('metrics')
       .then(response => {
-          setMetrics(response.data);
+        setMetrics(response.data);
       })
 
     methodsSelected.forEach(async (method) => {
       console.log(id, method);
-      await api.post('metricmethods', { 
+      await api.post('metricmethods', {
         id_metrica: id,
         id_metodo: method
       });
@@ -80,22 +78,22 @@ function MetricList() {
       <Modal
         open={openModal}
         form={form}
-        methods={methods}
-        methodsSelected={methodsSelected}
+        haveInputSelect={true}
+        items={methods}
+        itemsSelected={methodsSelected}
         handleClickOpenModal={handleClickOpenModal}
         handleOnChangeInput={handleOnChangeInput}
         handleChangeSelect={handleChangeSelect}
         handleOnSubmit={handleOnSubmit}
+        title={"Adicionar métricas de Usabilidade"}
+        titleSelectLabel={"Métodos de Avaliação de Usabilidade"}
       />
-      <Header title="Métricas de Usabilidade">
-        <Button
-          variant="contained"
-          color="primary"
-          onClick={handleClickOpenModal}
-        >
-          Adicionar
-        </Button>
-      </Header>
+
+      <Header
+        title="Métricas de Usabilidade"
+        handleClickOnButtonAdd={handleClickOpenModal}
+      />
+
       <TableComponent listItems={metrics} route="metrics" />
 
     </PageDefault>

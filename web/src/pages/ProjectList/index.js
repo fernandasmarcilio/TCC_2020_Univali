@@ -3,9 +3,7 @@ import React, { useState, useEffect } from 'react';
 import PageDefault from '../PageDefault';
 import Header from '../../component/Header';
 import TableComponent from '../../component/TableComponent';
-import Modal from './Modal';
-
-import { Button } from '@material-ui/core';
+import Modal from '../../component/Modal';
 
 import api from '../../services/api';
 
@@ -64,17 +62,14 @@ function ProjectList() {
         handleOnChangeInput={handleOnChangeInput} 
         form={form} 
         handleOnSubmit={handleOnSubmit}
+        title={"Adicionar projeto"}
+        haveInputSelect={false}
       />
 
-      <Header title="Projetos">
-        <Button
-          variant="contained"
-          color="primary"
-          onClick={handleClickOpenModal}
-        >
-          Adicionar
-          </Button>
-      </Header>
+      <Header 
+        title="Projetos"
+        handleClickOnButtonAdd={handleClickOpenModal}
+      />
 
       <TableComponent listItems={projects} routeView="projects" />
 

@@ -3,8 +3,7 @@ import React, { useState, useEffect } from 'react';
 import PageDefault from '../PageDefault';
 import Header from '../../component/Header';
 import TableComponent from '../../component/TableComponent';
-import Modal from './Modal';
-import { Button } from '@material-ui/core';
+import Modal from '../../component/Modal';
 
 import api from '../../services/api';
 
@@ -45,6 +44,10 @@ function MethodList() {
         handleClickOpenModal();
     };
 
+    function handleClickOnButtonDelete(id) {
+        
+    }
+
     useEffect(() => {
         api.get('methods')
             .then(response => {
@@ -60,18 +63,20 @@ function MethodList() {
                 handleOnChangeInput={handleOnChangeInput}
                 form={form}
                 handleOnSubmit={handleOnSubmit}
+                title={"Adicionar método de avaliação de usabilidade"}
+                haveInputSelect={false}
             />
 
-            <Header title="Métodos de Avaliação de Usabilidade">
-                <Button
-                    variant="contained"
-                    color="primary"
-                    onClick={handleClickOpenModal}
-                >
-                    Adicionar
-                </Button>
-            </Header>
-            <TableComponent listItems={methods} route="methods" />
+            <Header 
+                title="Métodos de Avaliação de Usabilidade"
+                handleClickOnButtonAdd={handleClickOpenModal}
+            />
+            
+            <TableComponent 
+                listItems={methods} 
+                route="methods"
+                handleClickOnButtonDelete={handleClickOnButtonDelete}
+            />
 
         </PageDefault>
     );

@@ -19,16 +19,20 @@ const useStyles = makeStyles(() => ({
   }
 }));
 
-function Modal({ 
-  open, 
-  handleClickOpenModal, 
-  form, 
-  handleOnChangeInput, 
-  metricsSelected,
-  metrics, 
+function Modal({
+  open,
+  handleClickOpenModal,
+  handleOnChangeInput,
+  form,
+  handleOnSubmit,
+  title,
+  haveInputSelect,
+  items,
+  itemsSelected,
   handleChangeSelect,
-  handleOnSubmit
- }) {
+  titleSelectLabel
+}) {
+
   const classes = useStyles();
 
   return (
@@ -36,12 +40,11 @@ function Modal({
       <Dialog
         open={open}
         onClose={handleClickOpenModal}
-        aria-labelledby="form-dialog-title"
         disableBackdropClick
         fullWidth={true}
         maxWidth="md"
       >
-        <DialogTitle id="form-dialog-title">Adicionar requisitos de usabilidade</DialogTitle>
+        <DialogTitle>{title}</DialogTitle>
         <DialogContent>
           <TextField
             autoFocus
@@ -62,22 +65,22 @@ function Modal({
             value={form.description}
             onChange={handleOnChangeInput}
           />
-
-          <FormControl variant="outlined" className={classes.formControl}>
-            <InputLabel>Métricas</InputLabel>
-            <Select
-              multiple
-              value={metricsSelected}
-              onChange={handleChangeSelect}
-            >
-              {metrics.map((metric) => (
-                <MenuItem key={metric.id} value={metric.id} name={metric.nome}>
-                  {metric.nome}
-                </MenuItem>
-              ))}
-            </Select>
-          </FormControl>
-
+          {haveInputSelect && (
+            <FormControl variant="outlined" className={classes.formControl}>
+              <InputLabel>{titleSelectLabel}</InputLabel>
+              <Select
+                multiple
+                value={itemsSelected}
+                onChange={handleChangeSelect}
+              >
+                {items.map((item) => (
+                  <MenuItem key={item.id} value={item.id} name={item.nome}>
+                    {item.nome}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+          )}
         </DialogContent>
         <DialogActions>
           <Button onClick={handleClickOpenModal} color="secondary" variant="outlined">
