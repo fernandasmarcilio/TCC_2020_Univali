@@ -4,6 +4,11 @@ exports.up = function(knex) {
         table.increments('id').primary();
         table.string('nome').notNullable();
         table.string('descricao').notNullable();
+
+        table.integer('id_usuario')
+        .notNullable()
+        .references('id')
+        .inTable('usuario');
         
     });
 };
