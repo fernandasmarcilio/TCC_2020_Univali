@@ -6,7 +6,7 @@
     --color-secondary-light: #000;
     --color-secondary: #000;
     --color-secondary-dark: #000;
-    --color-text: #333;
+    --color-text: #182936;
     --color-text-in-primary: #F0F0F7;
     --color-button-text: #F0F0F7;
     --color-border: #dcdce6;
@@ -26,17 +26,13 @@ body {
     background: var(--color-background);
 }
 
-#root {
-    display: flex;
-    justify-content: center;
-}
-
 body,
 input,
 button,
 textarea {
     font: 500 1.6rem Poppins;
 }
+
 
 .container {
     width: 90vw;
@@ -47,8 +43,14 @@ a {
     color: var(--color-text);
 }
 
-a: hover {
+a:hover {
     background: #eee;
+}
+
+.pages-route-container {
+    display: flex;
+    justify-content: center;
+    height: 100%;
 }
 
 @media(min-width: 700px) {

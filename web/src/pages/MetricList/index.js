@@ -3,20 +3,23 @@ import React, { useState, useEffect } from 'react';
 import PageDefault from '../PageDefault';
 import Header from '../../component/Header';
 import TableComponent from '../../component/TableComponent';
-import Modal from '../../component/Modal';
+import FormModal from '../../component/FormModal';
 
 import api from '../../services/api';
 
+const initialForm = {
+  name: ""
+}
+
 function MetricList() {
+  const user = localStorage.getItem('user');
+
   const [metrics, setMetrics] = useState([]);
   const [methods, setMethods] = useState([]);
   const [methodsSelected, setMethodsSelected] = useState([]);
   const [openModal, setOpenModal] = useState(false);
-
-  const [form, setForm] = useState({
-    name: "",
-    description: ""
-  });
+  const [form, setForm] = useState(initialForm);
+  const [idToEdit, setIdToEdit] = useState(0);
 
   const handleClickOpenModal = () => {
     setOpenModal(!openModal);
@@ -34,39 +37,72 @@ function MetricList() {
     setMethodsSelected(event.target.value);
   };
 
+  const listMetric = async () => {
+    await api.get(`user/${user}/metrics`)
+    .then(response => {
+      setMetrics(response.data);
+    })
+  }
+
   const handleOnSubmit = async () => {
     const data = {
       nome: form.name,
-      descricao: form.description
+      id_usuario: user,
+      metodos: methodsSelected
     }
 
-    const response = await api.post('metrics', { data });
-    const { id } = response.data;
+    if(idToEdit){
+      await api.put(`metrics/${idToEdit}`, data);
+    } else {
+      await api.post('metrics', data);
+    }
 
-    await api.get('metrics')
-      .then(response => {
-        setMetrics(response.data);
-      })
+    listMetric();
 
-    methodsSelected.forEach(async (method) => {
-      console.log(id, method);
-      await api.post('metricmethods', {
-        id_metrica: id,
-        id_metodo: method
-      });
-    })
-
+    handleClickOnCancel(); 
     handleClickOpenModal();
   };
 
+  async function handleClickOnButtonDelete(id) {
+    await api.delete(`metrics/${id}`);
+
+    listMetric();
+  }
+
+  async function handleClickOnButtonEdit(id) {
+    const metric = await api.get(`metrics/${id}`);
+    const {nome, metodos } = metric.data;
+
+    const formToEdit = {
+      name: nome
+    }
+
+    const idMetodos = metodos.map(item => item.id);
+
+    setMethodsSelected(idMetodos);
+    setForm(formToEdit);
+    setIdToEdit(id);
+    handleClickOpenModal();
+  }
+
+  
+  function handleClickOnCancel() {
+    setForm(initialForm);
+    setIdToEdit(0);
+    setMethodsSelected([]);
+    handleClickOpenModal();
+  }
+
 
   useEffect(() => {
-    api.get('metrics')
+    const user = localStorage.getItem('user');
+
+    api.get(`user/${user}/metrics`)
       .then(response => {
         setMetrics(response.data);
       });
 
-    api.get('methods')
+    api.get(`user/${user}/methods`)
       .then(response => {
         setMethods(response.data);
       });
@@ -75,7 +111,7 @@ function MetricList() {
   return (
     <PageDefault>
 
-      <Modal
+      <FormModal
         open={openModal}
         form={form}
         haveInputSelect={true}
@@ -87,6 +123,7 @@ function MetricList() {
         handleOnSubmit={handleOnSubmit}
         title={"Adicionar métricas de Usabilidade"}
         titleSelectLabel={"Métodos de Avaliação de Usabilidade"}
+        handleClickOnCancel={handleClickOnCancel}
       />
 
       <Header
@@ -94,7 +131,12 @@ function MetricList() {
         handleClickOnButtonAdd={handleClickOpenModal}
       />
 
-      <TableComponent listItems={metrics} route="metrics" />
+      <TableComponent
+        listItems={metrics}
+        route="metrics"
+        handleClickOnButtonDelete={handleClickOnButtonDelete}
+        handleClickOnButtonEdit={handleClickOnButtonEdit}
+      />
 
     </PageDefault>
   );

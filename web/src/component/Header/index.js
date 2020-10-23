@@ -6,27 +6,22 @@ import { Add } from '@material-ui/icons';
 
 import './styles.css';
 
-function Header({title, handleClickOnButtonAdd}) {
+function Header({ title, handleClickOnButtonAdd }) {
   return (
-      <>
-        <header className="header">
-            <Button variant="contained" color="primary" component={Link} to="/">
-            Sair
-            </Button>
-        </header>
-
-
-        <section className="title">
-            <h1>{title}</h1>
-            <Button
-                    variant="contained"
-                    color="primary"
-                    onClick={handleClickOnButtonAdd}
-                    startIcon={<Add />}
-                >
-                    Adicionar
-              </Button>
-        </section>
+    <>
+      <header className="title">
+        <h1>{title}</h1>
+        {handleClickOnButtonAdd &&
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={handleClickOnButtonAdd}
+            startIcon={<Add />}
+          >
+            Adicionar
+          </Button>
+        }
+      </header>
     </>
   );
 }

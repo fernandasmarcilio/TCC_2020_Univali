@@ -3,20 +3,29 @@ import React, { useState, useEffect } from 'react';
 import PageDefault from '../PageDefault';
 import Header from '../../component/Header';
 import TableComponent from '../../component/TableComponent';
-import Modal from '../../component/Modal';
+import FormModal from '../../component/FormModal';
 
 import api from '../../services/api';
 
-function RequirementList() {
-  const [ requirements, setRequirements ] = useState([]);
-  const [form, setForm] = useState({
-    name: "",
-    description: ""
-  });
+import Snackbar from '@material-ui/core/Snackbar';
+import Slide from '@material-ui/core/Slide';
+import Typography from '@material-ui/core/Typography';
+import Alert from '@material-ui/lab/Alert';
 
+const initialForm = {
+  name: ""
+}
+
+function RequirementList() {
+  const user = localStorage.getItem('user');
+
+  const [ requirements, setRequirements ] = useState([]);
+  const [form, setForm] = useState(initialForm);
   const [metrics, setMetrics] = useState([]);
   const [metricsSelected, setMetricsSelected] = useState([]);
   const [openModal, setOpenModal] = useState(false);
+  const [idToEdit, setIdToEdit] = useState(0);
+  const [openAlertSucess, setOpenAlertSucess] = useState(false);
 
   const handleClickOpenModal = () => {
     setOpenModal(!openModal);
@@ -30,44 +39,84 @@ function RequirementList() {
     })
   }
 
+  const listRequirement = async () => {
+    api.get(`user/${user}/requirements`)
+    .then(response => {
+      setRequirements(response.data);
+    })
+  }
+
   const handleChangeSelect = (event) => {
     setMetricsSelected(event.target.value);
   };
 
+  const handleOpenAlertSucess = (open) => {
+    setOpenAlertSucess(open);
+  }
+
   const handleOnSubmit = async () => {
     const data = {
       nome: form.name,
-      descricao: form.description
+      id_usuario: user,
+      metricas: metricsSelected
+  }
+
+    if(idToEdit){
+      await api.put(`requirements/${idToEdit}`, data);
+    } else {
+      await api.post('requirements', data);
     }
 
-    const response = await api.post('requirements', { data });
-    const { id } = response.data;
+    listRequirement();
 
-    metricsSelected.forEach(async (metric) => {
-      console.log(id, metric);
-      await api.post('requirementmetrics', { 
-        id_requisito: id,
-        id_metrica: metric
-      });
-    });
-
-    api.get('requirements')
-    .then(response => {
-      setRequirements(response.data);
-    })
-
+    handleOpenAlertSucess(true);
+    
+    handleClickOnCancel() ;
     handleClickOpenModal();
   };
 
+  async function handleClickOnButtonDelete(id) {
+    await api.delete(`requirements/${id}`);
+    
+    listRequirement();
+  }
+
+  async function handleClickOnButtonEdit(id) {
+    const requirement = await api.get(`requirements/${id}`);
+    const {nome, metricas } = requirement.data;
+
+    const formToEdit = {
+      name: nome
+    }
+
+    const idMetricas = metricas.map(item => item.id);
+
+    setMetricsSelected(idMetricas);
+    setForm(formToEdit);
+    setIdToEdit(id);
+    handleClickOpenModal();
+  }
+
+  function handleClickOnCancel() {
+    setForm(initialForm);
+    setIdToEdit(0);
+    setMetricsSelected([]);
+    handleClickOpenModal();
+  }
+
 
   useEffect(() => {
-    api.get('requirements')
-      .then(response => {
-        setRequirements(response.data);
-      })
+    const user = localStorage.getItem('user');
+    
+    api.get(`user/${user}/requirements`)
+    .then(response => {
+      console.log(response.data);
+      setRequirements(response.data);
+    })
 
-    api.get('metrics')
+    api.get(`user/${user}/metrics`)
       .then(response => {
+        console.log(response.data);
         setMetrics(response.data);
     });
   
@@ -75,7 +124,27 @@ function RequirementList() {
 
   return (
     <PageDefault>
-      <Modal
+      <Snackbar 
+        open={openAlertSucess} 
+        autoHideDuration={6000} 
+        onClose={() => handleOpenAlertSucess(false)}
+        anchorOrigin={{
+          vertical: 'bottom',
+          horizontal: 'left',
+        }}
+        TransitionComponent={(props) => (
+          <Slide {...props} direction="left" />
+        )
+        }
+      >
+        <Alert onClose={() => handleOpenAlertSucess(false)} variant="filled" severity="success" elevation={6}>
+          <Typography variant="h5" gutterBottom>
+            Requisito salvo com sucesso!
+          </Typography>
+        </Alert>
+      </Snackbar>
+
+      <FormModal
         open={openModal}
         form={form}
         haveInputSelect={true}
@@ -87,13 +156,19 @@ function RequirementList() {
         handleOnSubmit={handleOnSubmit}
         title={"Adicionar requisitos de usabilidade"}
         titleSelectLabel={"Métricas"}
+        handleClickOnCancel={handleClickOnCancel}
       />
 
       <Header 
         title="Requisitos de Usabilidade"
         handleClickOnButtonAdd={handleClickOpenModal}
       />
-      <TableComponent listItems={requirements} route="requirements" />
+      <TableComponent 
+        listItems={requirements} 
+        route="requirements"
+        handleClickOnButtonDelete={handleClickOnButtonDelete}  
+        handleClickOnButtonEdit={handleClickOnButtonEdit}
+      />
 
     </PageDefault>
   );

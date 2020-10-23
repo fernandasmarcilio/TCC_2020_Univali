@@ -10,7 +10,7 @@ import Paper from '@material-ui/core/Paper';
 
 import Actions from '../Actions';
 
-function TableComponent({listItems, routeView, handleClickOnButtonDelete}) {
+function TableComponent({listItems, routeView, handleClickOnButtonDelete, handleClickOnButtonEdit}) {
   return (
         <TableContainer component={Paper}>
         <Table aria-label="simple table">
@@ -22,15 +22,16 @@ function TableComponent({listItems, routeView, handleClickOnButtonDelete}) {
             </TableRow>
         </TableHead>
         <TableBody>
-            {listItems.map((item) => (
+            {listItems && listItems.map((item) => (
                 <TableRow hover key={item.id}>
                     <TableCell>{item.nome}</TableCell>
                     <TableCell>{item.descricao}</TableCell>
                     <TableCell align="right">
                         <Actions 
                             routeView={routeView} 
-                            idProject={item.id} 
-                            nameProject={item.nome}
+                            idItem={item.id}
+                            handleClickOnButtonDelete={handleClickOnButtonDelete}
+                            handleClickOnButtonEdit={handleClickOnButtonEdit}
                         />
                     </TableCell>
                 </TableRow>

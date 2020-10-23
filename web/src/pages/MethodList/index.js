@@ -3,18 +3,22 @@ import React, { useState, useEffect } from 'react';
 import PageDefault from '../PageDefault';
 import Header from '../../component/Header';
 import TableComponent from '../../component/TableComponent';
-import Modal from '../../component/Modal';
+import FormModal from '../../component/FormModal';
 
 import api from '../../services/api';
 
+const initialForm = {
+    name: "",
+    description: ""
+  }
+
 function MethodList() {
+    const user = localStorage.getItem('user');
+
     const [methods, setMethods] = useState([]);
     const [openModal, setOpenModal] = useState(false);
-
-    const [form, setForm] = useState({
-        name: "",
-        description: ""
-    });
+    const [form, setForm] = useState(initialForm);
+    const [idToEdit, setIdToEdit] = useState(0);
 
     const handleClickOpenModal = () => {
         setOpenModal(!openModal);
@@ -28,36 +32,70 @@ function MethodList() {
         })
     };
 
+    const listMethod = async () => {
+        await api.get(`user/${user}/methods`)
+        .then(response => {
+            setMethods(response.data);
+        })
+      }
+
     const handleOnSubmit = async () => {
         const data = {
             nome: form.name,
-            descricao: form.description
+            descricao: form.description,
+            id_usuario: user
         }
 
-        await api.post('methods', { data });
+        if(idToEdit) {
+            await api.put(`methods/${idToEdit}`, data );
+        }else {
+            await api.post('methods', data );
+        }
 
-        await api.get('methods')
-            .then(response => {
-                setMethods(response.data);
-            })
+        listMethod();
 
+        handleClickOnCancel();
         handleClickOpenModal();
     };
 
-    function handleClickOnButtonDelete(id) {
+    async function handleClickOnButtonDelete(id) {
+        await api.delete(`methods/${id}`);
         
+        listMethod();
+    }
+
+    async function handleClickOnButtonEdit(id) {
+        const method = await api.get(`methods/${id}`);
+        const {nome, descricao } = method.data;
+
+        const formToEdit = {
+          name: nome,
+          description: descricao
+        }
+
+        setForm(formToEdit);
+        setIdToEdit(id);
+        handleClickOpenModal();
+    }
+
+    function handleClickOnCancel() {
+        setForm(initialForm);
+        setIdToEdit(0);
+        handleClickOpenModal();
     }
 
     useEffect(() => {
-        api.get('methods')
-            .then(response => {
-                setMethods(response.data);
-            })
+        const user = localStorage.getItem('user');
+
+        api.get(`user/${user}/methods`)
+        .then(response => {
+            setMethods(response.data);
+        })
     }, [])
 
     return (
         <PageDefault>
-            <Modal
+            <FormModal
                 open={openModal}
                 handleClickOpenModal={handleClickOpenModal}
                 handleOnChangeInput={handleOnChangeInput}
@@ -65,6 +103,8 @@ function MethodList() {
                 handleOnSubmit={handleOnSubmit}
                 title={"Adicionar método de avaliação de usabilidade"}
                 haveInputSelect={false}
+                handleClickOnCancel={handleClickOnCancel}
+                hasDescription
             />
 
             <Header 
@@ -76,6 +116,7 @@ function MethodList() {
                 listItems={methods} 
                 route="methods"
                 handleClickOnButtonDelete={handleClickOnButtonDelete}
+                handleClickOnButtonEdit={handleClickOnButtonEdit}
             />
 
         </PageDefault>

@@ -1,18 +1,19 @@
 import React from 'react';
 
 import Menu from '../../component/Menu';
+import Appbar from '../../component/Appbar';
 
 import './styles.css';
 
 function PageDefault({ children }) {
     return(
         <>
-            <Menu />
+            <Appbar>
 
             <div className="container">
                 {children}
             </div>
-            
+            </Appbar>
         </>
     );
 }

@@ -3,19 +3,22 @@ import React, { useState, useEffect } from 'react';
 import PageDefault from '../PageDefault';
 import Header from '../../component/Header';
 import TableComponent from '../../component/TableComponent';
-import Modal from '../../component/Modal';
+import FormModal from '../../component/FormModal';
 
 import api from '../../services/api';
+
+const initialForm = {
+  name: "",
+  description: ""
+}
 
 function ProjectList() {
   const user = localStorage.getItem('user');
 
   const [projects, setProjects] = useState([]);
   const [openModal, setOpenModal] = useState(false);
-  const [form, setForm] = useState({
-    name: "",
-    description: ""
-  });
+  const [form, setForm] = useState(initialForm);
+  const [idToEdit, setIdToEdit] = useState(0);
   
   const handleClickOpenModal = () => {
     setOpenModal(!openModal);
@@ -29,21 +32,57 @@ function ProjectList() {
     })
   };
 
-  const handleOnSubmit = async () => {
+  async function handleOnSubmit() {
     const data = {
       nome: form.name,
       descricao: form.description,
     }
 
-    await api.post(`projects?id_usuario=${user}`, { data });
+    if(idToEdit){
+      await api.put(`projects/${idToEdit}`, data);
+    } else {
+      await api.post(`projects?id_usuario=${user}`, data);
+    }
 
     await api.get(`projects?id_usuario=${user}`)
       .then(response => {
         setProjects(response.data);
       })
 
+    handleClickOnCancel(); 
     handleClickOpenModal();
   };
+
+  async function handleClickOnButtonDelete(id) {
+    const user = localStorage.getItem('user')
+
+    await api.delete(`projects/${id}`);
+    
+    api.get(`projects?id_usuario=${user}`)
+    .then(response => {
+      setProjects(response.data);
+    })
+  }
+
+  async function handleClickOnButtonEdit(id) {
+    const project = await api.get(`projects/${id}`);
+    const {nome, descricao } = project.data;
+
+    const formToEdit = {
+      name: nome,
+      description: descricao
+    }
+
+    setForm(formToEdit);
+    setIdToEdit(id);
+    handleClickOpenModal();
+  }
+
+  function handleClickOnCancel() {
+    setForm(initialForm);
+    setIdToEdit(0);
+    handleClickOpenModal();
+  }
 
   useEffect(() => {
     const user = localStorage.getItem('user')
@@ -56,7 +95,7 @@ function ProjectList() {
   return (
     <PageDefault>
 
-      <Modal 
+      <FormModal 
         open={openModal} 
         handleClickOpenModal={handleClickOpenModal}
         handleOnChangeInput={handleOnChangeInput} 
@@ -64,6 +103,8 @@ function ProjectList() {
         handleOnSubmit={handleOnSubmit}
         title={"Adicionar projeto"}
         haveInputSelect={false}
+        handleClickOnCancel={handleClickOnCancel}
+        hasDescription
       />
 
       <Header 
@@ -71,7 +112,12 @@ function ProjectList() {
         handleClickOnButtonAdd={handleClickOpenModal}
       />
 
-      <TableComponent listItems={projects} routeView="projects" />
+      <TableComponent 
+        listItems={projects} 
+        routeView="projects"
+        handleClickOnButtonDelete={handleClickOnButtonDelete}
+        handleClickOnButtonEdit={handleClickOnButtonEdit}
+      />
 
     </PageDefault>
   );

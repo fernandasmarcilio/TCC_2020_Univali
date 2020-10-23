@@ -4,10 +4,10 @@ import { useHistory } from 'react-router-dom';
 import './styles.css';
 
 import logoImg from '../../assets/images/argeux_logo.svg';
-import backgroundImg from '../../assets/images/argeux_background.svg';
+import backgroundImg from '../../assets/images/argeux_landing.svg';
 
-import TextField from '@material-ui/core/TextField';
-import Button from '@material-ui/core/Button';
+import Input from '../../component/Input';
+import Button from '../../component/Button';
 
 import api from '../../services/api';
 
@@ -21,12 +21,18 @@ function Login() {
     };
 
     const handleOnSubmit = async () => {
-        await api.get(`users/${user}`)
-            .then(response => {
-                const {id } = response.data;
-                localStorage.setItem('user', id);
-                history.push("/projects")
-        });
+        let response = await api.get(`users?usuario=${user}`);
+        let id = response.data.id;
+
+        if(!id) {
+            response = await api.post(`users`, { usuario: user });
+            id = response.data.id;
+        }
+
+        if(id){
+            localStorage.setItem('user', id);
+            history.push("/projects")
+        }
     };
 
     return (
@@ -35,6 +41,24 @@ function Login() {
                 <div className="logo-container">
                     <img src={logoImg} alt="Logo" />
                     <h2>Sua plataforma para aplicar usabilidade no seu aplicativo móvel.</h2>
+
+                    <div className="form">
+                        <form action="" className="login-form-container">
+                            <Input 
+                                label="Usuário"
+                                name="user"
+                                value={user}
+                                onChange={handleOnChangeInput}
+                            />
+
+                            <Button
+                                onClick={handleOnSubmit}
+                            >
+                                Entrar
+                        </Button>
+                        </form>
+                    </div>
+
                 </div>
 
                 <img
@@ -42,30 +66,6 @@ function Login() {
                     alt="Idoso sentado no sofá usando um celular"
                     className="hero-image"
                 />
-
-                <div className="form">
-                    <form action="" className="login-form-container">
-                        <TextField
-                            autoFocus
-                            margin="dense"
-                            label="Usuário"
-                            variant="outlined"
-                            fullWidth
-                            name="user"
-                            value={user}
-                            onChange={handleOnChangeInput}
-                        />
-
-                        <Button
-                            onClick={handleOnSubmit}
-                            color="primary"
-                            variant="contained"
-                            size="large"
-                        >
-                            Entrar
-                        </Button>
-                    </form>
-                </div>
             </div>
         </div>
     );

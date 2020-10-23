@@ -34,14 +34,14 @@ const useStyle = makeStyles((theme) => ({
   }
 }))
 
-function Board({ data }) {
+function Board({ data, handleClickOpenModal,creatable }) {
   const classes = useStyle();
 
   return (
     <Paper className={classes.root} >
       <CssBaseline />
       
-      <TitleListBoard title={data.title} creatable={data.creatable} />
+      <TitleListBoard title={data.title} />
 
       <Droppable droppableId={`${data.id}`}>
         {(provided) => (
@@ -59,7 +59,7 @@ function Board({ data }) {
       </Droppable>
 
       { data.creatable &&
-        <InputCardBoard />
+        <InputCardBoard handleClickOpenModal={handleClickOpenModal} />
       }
     </Paper>
   );

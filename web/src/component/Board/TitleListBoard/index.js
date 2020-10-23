@@ -1,8 +1,7 @@
 import React from 'react';
 
-import { IconButton , Typography } from '@material-ui/core';
+import { Typography } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
-import { Add } from '@material-ui/icons';
 
 const useStyle = makeStyles((theme) => ({
   editableTitleContainer: {
@@ -25,7 +24,7 @@ const useStyle = makeStyles((theme) => ({
   },
 }))
 
-function TitleListBoard({ title, creatable }) {
+function TitleListBoard({ title }) {
   const classes = useStyle();
 
   return (
@@ -36,11 +35,6 @@ function TitleListBoard({ title, creatable }) {
         >
           {title}
         </Typography>
-        {creatable && (
-          <IconButton  size="small" color="primary">
-            <Add />
-          </IconButton >
-        )}
       </div>
     </>
   );

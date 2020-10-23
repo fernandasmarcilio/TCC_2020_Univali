@@ -27,7 +27,7 @@ function CardBoard({ data, index }) {
         <Paper 
           className={classes.card}
           >
-          {data.content}
+          {data.nome}
         </Paper>
         </div>
       )}

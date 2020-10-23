@@ -24,12 +24,12 @@ const useStyle = makeStyles((theme) => ({
   },
 }));
 
-function InputCardBoard() {
+function InputCardBoard({ handleClickOpenModal }) {
   const classes = useStyle();
 
   return (
     <div className={classes.root}>
-    <Paper className={classes.addCard} elevation={0}>
+    <Paper className={classes.addCard} elevation={0} onClick={handleClickOpenModal} >
       <Add /> 
       <Typography>Adicionar requisitos</Typography>
     </Paper>
