@@ -3,30 +3,32 @@ import React from 'react';
 import Button from '@material-ui/core/Button';
 import { makeStyles } from '@material-ui/core/styles';
 
+import { Add } from '@material-ui/icons';
+
 const useStyle = makeStyles((theme) => ({
   button: {
-    width: '100%',
-    height: '40px',
-    fontSize: '1.6rem',
-    backgroundColor: '#079B8D',
-    '&:hover': {
-      background: '#078276',
-    }
+    padding: theme.spacing(1),
+    fontSize: theme.spacing(1.5),
+  }, 
+  buttonFullWidth :{
+    padding: theme.spacing(1),
+    fontSize: theme.spacing(1.5),
+    width: '100%'
   }
 }))
 
-function ButtonComponent({ children, onClick }) {
+function ButtonComponent({ name, startIcon, onClick, fullWidth }) {
   const classes = useStyle();
 
   return (
-    <Button
-      className={classes.button}
+    <Button 
+      variant="contained" 
+      color="primary" 
+      className={fullWidth ? classes.buttonFullWidth : classes.button}
+      startIcon={startIcon && <Add />}
       onClick={onClick}
-      color="primary"
-      variant="contained"
-      size="large"
     >
-      {children}
+      {name}
     </Button>
   );
 }

@@ -5,88 +5,128 @@ module.exports = {
         const { id } = request.params;
 
         const metricas = await db('metricas')
-                        .where('id_usuario', id)
-                        .select('*');
+            .where('id_usuario', id)
+            .select('*');
 
-        return response.json( metricas );
+        return response.json(metricas);
     },
 
     async show(request, response) {
         const { id } = request.params;
+        const trx = await db.transaction();
 
-        const metricArray = await db('metricas').select('*').where('id', id);
+        try {
+            const metricArray = await trx('metricas').select('*').where('id', id);
 
-        const methods = await db('metrica_metodo')
-            .select('metodos.*')
-            .where('id_metrica', id)
-            .innerJoin('metodos', 'metrica_metodo.id_metodo', 'metodos.id')
+            const methods = await trx('metrica_metodo')
+                .select('metodos.*')
+                .where('id_metrica', id)
+                .innerJoin('metodos', 'metrica_metodo.id_metodo', 'metodos.id')
 
-        const metric = metricArray[0];
+            const metric = metricArray[0];
 
-        const data = {...metric, metodos: methods}
+            const data = { ...metric, metodos: methods }
+            await trx.commit();
 
-        return response.json(data);
+            return response.json(data);
+        } catch (error) {
+            console.log(error);
+            await trx.rollback();
+            return res.status(400).json({
+                error: 'Unexpected error while show metrics'
+            })
+        }
     },
 
     async create(request, response) {
         const { nome, id_usuario, metodos } = request.body;
+        const trx = await db.transaction();
 
-        const idArray = await db('metricas').insert({
-            nome,
-            id_usuario
-        })
-
-        const id = idArray[0];
-
-        metodos.forEach(async (idMetodo) => {
-            await db('metrica_metodo').insert({
-                id_metrica: id, 
-                id_metodo: idMetodo
+        try {
+            const idArray = await trx('metricas').insert({
+                nome,
+                id_usuario
             })
-        });
-    
-        return response.status(201).json({ id });
+
+            const id = idArray[0];
+
+            for (const metodo of metodos) {
+                await trx('metrica_metodo').insert({
+                    id_metrica: id,
+                    id_metodo: metodo
+                })
+            }
+
+            await trx.commit();
+            return response.status(201).json({ id });
+        } catch (error) {
+            console.log(error);
+            await trx.rollback();
+            return res.status(400).json({
+                error: 'Unexpected error while create metric'
+            })
+        }
     },
 
     async update(request, response) {
         const { nome, metodos } = request.body;
         const { id } = request.params
+        const trx = await db.transaction();
 
-        await db('metricas')
-            .where('id', id)
-            .update({
-                nome
+        try {
+            await trx('metricas')
+                .where('id', id)
+                .update({
+                    nome
+                })
+
+            await trx('metrica_metodo')
+                .where('id_metrica', id)
+                .delete();
+
+            for (const metodo of metodos) {
+                await trx('metrica_metodo').insert({
+                    id_metrica: id,
+                    id_metodo: metodo
+                })
+            }
+
+            await trx.commit();
+            return response.status(201).send();
+        } catch (error) {
+            console.log(error);
+            await trx.rollback();
+            return res.status(400).json({
+                error: 'Unexpected error while update metric'
             })
-
-        await db('metrica_metodo')
-            .where('id_metrica', id)
-            .delete();
-
-            metodos.forEach(async (idMetodo) => {
-            await db('metrica_metodo').insert({
-                id_metrica: id, 
-                id_metodo: idMetodo
-            })
-        });
-
-        return response.status(201).send();
+        }
     },
 
     async delete(request, response) {
         const { id } = request.params;
+        const trx = await db.transaction();
 
-        await db('metrica_metodo')
-        .where('id_metrica', id)
-        .delete();
+        try {
+            await trx('metrica_metodo')
+                .where('id_metrica', id)
+                .delete();
 
-        await db('requisito_metrica')
-        .where('id_metrica', id)
-        .delete(); 
+            await trx('requisito_metrica')
+                .where('id_metrica', id)
+                .delete();
 
-        await db('metricas')
-            .where('id', id)
-            .delete(); 
+            await trx('metricas')
+                .where('id', id)
+                .delete();
 
-        return response.status(204).send();
+            await trx.commit();
+            return response.status(204).send();
+        } catch (error) {
+            console.log(error);
+            await trx.rollback();
+            return res.status(400).json({
+                error: 'Unexpected error while delete metric'
+            })
+        }
     }
 }

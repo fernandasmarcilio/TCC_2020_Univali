@@ -7,8 +7,8 @@ import ReportDocument from './Document';
 import './styles.css';
 
 function ReportPDF({ match }) {
-  const [user, setUser] = useState(localStorage.getItem('user'));
-  const [id, setId] = useState(match.params.id);
+  const [user] = useState(localStorage.getItem('user'));
+  const [id] = useState(match.params.id);
 
   const [project, setProject] = useState({});
   const [lists, setLists] = useState([]);

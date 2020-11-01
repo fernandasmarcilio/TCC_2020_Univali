@@ -1,28 +1,39 @@
 import React from 'react';
 
-import { Link } from 'react-router-dom';
-
+import { withStyles } from '@material-ui/core/styles';
 import IconButton from '@material-ui/core/IconButton';
 import { Visibility, Edit, Delete } from '@material-ui/icons';
+import Tooltip from '@material-ui/core/Tooltip';
+import Fade from '@material-ui/core/Fade';
 
-function Actions({ routeView, idItem, handleClickOnButtonDelete, handleClickOnButtonEdit }) {
-  const route = `${routeView}/${idItem}`;
+const LightTooltip = withStyles((theme) => ({
+  tooltip: {
+    backgroundColor: '#fff',
+    color: '#333',
+    boxShadow: theme.shadows[1],
+    fontSize: 11,
+  },
+}))(Tooltip);
 
+function Actions({ idItem, handleClickOnButtonDelete, handleClickOnButtonEdit, handleClickOnButtonView }) {
   return (
     <>
-      <Link to={routeView ? route : '/'}>
-        <IconButton>
-          <Visibility  style={{ color: '#E89923' }}/>
+      <LightTooltip title="Visualizar" placement="top-end" TransitionComponent={Fade}>
+        <IconButton onClick={() => handleClickOnButtonView(idItem)}>
+          <Visibility style={{ color: '#E89923' }} />
         </IconButton>
-      </Link>
+      </LightTooltip>
 
-      <IconButton onClick={() => handleClickOnButtonEdit(idItem)}>
-        <Edit style={{ color: '#1F82CF'}}/>
-      </IconButton>
-
-      <IconButton onClick={() => handleClickOnButtonDelete(idItem)}>
-        <Delete color="secondary" />
-      </IconButton>
+      <LightTooltip title="Editar" placement="top-end" TransitionComponent={Fade}>
+        <IconButton onClick={() => handleClickOnButtonEdit(idItem)}>
+          <Edit style={{ color: '#1F82CF' }} />
+        </IconButton>
+      </LightTooltip>
+      <LightTooltip title="Excluir" placement="top-end" TransitionComponent={Fade}>
+        <IconButton onClick={() => handleClickOnButtonDelete(idItem)}>
+          <Delete color="secondary" />
+        </IconButton>
+      </LightTooltip>
     </>
   );
 }

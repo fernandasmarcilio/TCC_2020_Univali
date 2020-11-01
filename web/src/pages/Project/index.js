@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useHistory } from "react-router-dom";
 
 import { DragDropContext } from 'react-beautiful-dnd';
 
@@ -9,11 +10,10 @@ import api from '../../services/api';
 
 import Board from '../../component/Board';
 import Modal from './Modal';
+import TreeNav from '../../component/TreeNav';
 
-import { Link } from 'react-router-dom';
 
 import { makeStyles } from '@material-ui/core/styles';
-import Button from '@material-ui/core/Button';
 
 import produce from 'immer';
 
@@ -35,9 +35,12 @@ const useStyle = makeStyles((theme) => ({
 
 function Project({ match }) {
   const classes = useStyle();
+  const history = useHistory();
 
   const [id, setId] = useState(match.params.id)
   const [user, setUser] = useState(localStorage.getItem('user'));
+
+  const [nav, setNav] = useState({name: "", tree: []});
 
   const [openModal, setOpenModal] = useState(false);
   const [checked, setChecked] = useState([]);
@@ -149,11 +152,21 @@ function Project({ match }) {
     api.put(`projects/${id}/status/${idStatus}`, data)
   }
 
+  const handleClickButton = () => {
+    history.push(`/projects/${id}/report`);
+  }
+
   useEffect(() => {
     api.get(`projects?id_usuario=${user}&id_projeto=${id}`)
       .then(response => {
         const data = response.data[0];
         setProject(data);
+        setNav({
+          name: data.nome, 
+          tree: [
+            {name: "projeto", to: "/projects"}
+          ]
+        })
       })
 
     api.get(`user/${user}/requirements`)
@@ -187,7 +200,13 @@ function Project({ match }) {
         handleClickAddRequirement={handleClickAddRequirement}
       />
 
-      <Header title={project.nome ? project.nome : `Project ${id}`} />
+      <TreeNav nav={nav} />
+
+      <Header 
+        title={project.nome} 
+        onClick={handleClickButton}
+        nameButton="Relatório do Projeto"  
+      />
       <DragDropContext onDragEnd={onDragEnd}>
         <div className={classes.boardContainer}>
           {lists && lists.map((list) => (
@@ -195,16 +214,6 @@ function Project({ match }) {
           ))}
         </div>
       </DragDropContext>
-
-      <div className={classes.buttonContainer}>
-        <Link
-          to={`/projects/${id}/report`}
-        >
-          <Button variant="contained" color="primary" className={classes.button}>
-            Relatório do Projeto
-        </Button>
-        </Link>
-      </div>
     </PageDefault>
   );
 }

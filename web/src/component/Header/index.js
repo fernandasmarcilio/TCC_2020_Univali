@@ -1,25 +1,23 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
 
-import { Button } from '@material-ui/core';
-import { Add } from '@material-ui/icons';
+import Button from '../Button';
+import { Typography } from '@material-ui/core';
 
 import './styles.css';
 
-function Header({ title, handleClickOnButtonAdd }) {
+function Header({ title, nameButton, onClick, startIcon }) {
   return (
     <>
       <header className="title">
-        <h1>{title}</h1>
-        {handleClickOnButtonAdd &&
+        <Typography variant="h3" >{title}</Typography>
+        {onClick &&
           <Button
             variant="contained"
             color="primary"
-            onClick={handleClickOnButtonAdd}
-            startIcon={<Add />}
-          >
-            Adicionar
-          </Button>
+            onClick={onClick}
+            startIcon={startIcon}
+            name={nameButton}
+          />
         }
       </header>
     </>

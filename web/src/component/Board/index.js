@@ -14,6 +14,9 @@ const useStyle = makeStyles((theme) => ({
     width: '300px',
     backgroundColor: '#EBECF0',
     marginLeft: theme.spacing(1),
+    '&:first-child': {
+      marginLeft: 0
+    }
   },
   cardContainer: {
     height: '400px',

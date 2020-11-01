@@ -7,6 +7,8 @@ const styles = StyleSheet.create({
     display: 'flex',
     flexDirection: 'row',
     paddingBottom: '10px',
+    margin: '20px 0',
+    width: '94%',
     borderBottomWidth: 2,
     borderBottomColor: '#112131',
     borderBottomStyle: 'solid',
@@ -15,7 +17,7 @@ const styles = StyleSheet.create({
     textTransform: 'uppercase',
   },
   name: {
-    fontSize: 24,
+    fontSize: 20,
   },
   subtitle: {
     marginTop: '5px',
@@ -24,7 +26,7 @@ const styles = StyleSheet.create({
 });
 
 const Header = ({ title, subtitle }) => (
-  <View style={styles.container}>
+  <View style={styles.container} fixed>
     <View style={styles.detailColumn}>
       <Text style={styles.name}>{title}</Text>
       <Text style={styles.subtitle}>{subtitle}</Text>

@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useHistory } from 'react-router-dom';
 
 import PageDefault from '../PageDefault';
 import Header from '../../component/Header';
@@ -13,6 +14,7 @@ const initialForm = {
 }
 
 function ProjectList() {
+  const history = useHistory();
   const user = localStorage.getItem('user');
 
   const [projects, setProjects] = useState([]);
@@ -78,6 +80,10 @@ function ProjectList() {
     handleClickOpenModal();
   }
 
+  const handleClickOnButtonView = (id) => {
+    history.push(`/projects/${id}`);
+  }
+
   function handleClickOnCancel() {
     setForm(initialForm);
     setIdToEdit(0);
@@ -109,14 +115,18 @@ function ProjectList() {
 
       <Header 
         title="Projetos"
-        handleClickOnButtonAdd={handleClickOpenModal}
+        onClick={handleClickOpenModal}
+        nameButton="Adicionar"  
+        startIcon
       />
 
+      
       <TableComponent 
         listItems={projects} 
         routeView="projects"
         handleClickOnButtonDelete={handleClickOnButtonDelete}
         handleClickOnButtonEdit={handleClickOnButtonEdit}
+        handleClickOnButtonView={handleClickOnButtonView}
       />
 
     </PageDefault>

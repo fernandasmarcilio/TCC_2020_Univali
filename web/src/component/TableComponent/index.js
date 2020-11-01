@@ -10,14 +10,19 @@ import Paper from '@material-ui/core/Paper';
 
 import Actions from '../Actions';
 
-function TableComponent({listItems, routeView, handleClickOnButtonDelete, handleClickOnButtonEdit}) {
+function TableComponent({
+    listItems, 
+    routeView, 
+    handleClickOnButtonDelete, 
+    handleClickOnButtonEdit,
+    handleClickOnButtonView
+}) {
   return (
         <TableContainer component={Paper}>
         <Table aria-label="simple table">
         <TableHead>
             <TableRow>
             <TableCell>Nome</TableCell>
-            <TableCell>Descrição</TableCell>
             <TableCell align="right">Ações</TableCell>
             </TableRow>
         </TableHead>
@@ -25,13 +30,13 @@ function TableComponent({listItems, routeView, handleClickOnButtonDelete, handle
             {listItems && listItems.map((item) => (
                 <TableRow hover key={item.id}>
                     <TableCell>{item.nome}</TableCell>
-                    <TableCell>{item.descricao}</TableCell>
                     <TableCell align="right">
                         <Actions 
                             routeView={routeView} 
                             idItem={item.id}
                             handleClickOnButtonDelete={handleClickOnButtonDelete}
                             handleClickOnButtonEdit={handleClickOnButtonEdit}
+                            handleClickOnButtonView={handleClickOnButtonView}
                         />
                     </TableCell>
                 </TableRow>

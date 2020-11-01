@@ -1,27 +1,10 @@
 import React from 'react';
-import clsx from 'clsx';
-import { makeStyles, useTheme, withStyles } from '@material-ui/core/styles';
-import Drawer from '@material-ui/core/Drawer';
-import AppBar from '@material-ui/core/AppBar';
-import Toolbar from '@material-ui/core/Toolbar';
-import List from '@material-ui/core/List';
-import CssBaseline from '@material-ui/core/CssBaseline';
-import Typography from '@material-ui/core/Typography';
-import Divider from '@material-ui/core/Divider';
-import IconButton from '@material-ui/core/IconButton';
-import MenuIcon from '@material-ui/icons/Menu';
-import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
-import ChevronRightIcon from '@material-ui/icons/ChevronRight';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemIcon from '@material-ui/core/ListItemIcon';
-import ListItemText from '@material-ui/core/ListItemText';
-import Tooltip from '@material-ui/core/Tooltip';
-import Fade from '@material-ui/core/Fade';
-import Button from '@material-ui/core/Button';
-
 import { Link } from 'react-router-dom';
 
-import { FolderOpen, Subject, BarChart, PlaylistAddCheck, ChevronLeft, ChevronRight } from '@material-ui/icons';
+import clsx from 'clsx';
+import { makeStyles, useTheme, withStyles } from '@material-ui/core/styles';
+import { Drawer, AppBar, Toolbar, List, CssBaseline, Divider, IconButton, ListItem, ListItemIcon, ListItemText, Tooltip, Fade, Button} from '@material-ui/core';
+import { FolderOpen, Subject, BarChart, PlaylistAddCheck, Menu, ChevronRight, ChevronLeft } from '@material-ui/icons';
 
 const drawerWidth = 300;
 
@@ -78,7 +61,6 @@ const useStyles = makeStyles((theme) => ({
     alignItems: 'center',
     justifyContent: 'flex-end',
     padding: theme.spacing(0, 1),
-    // necessary for content to be below app bar
     ...theme.mixins.toolbar,
   },
   content: {
@@ -146,7 +128,7 @@ function Appbar({ children }) {
                 [classes.hide]: open,
               })}
             >
-              <MenuIcon />
+              <Menu />
             </IconButton>
           </div>
           <div className={classes.buttonSingOut}>
@@ -169,7 +151,7 @@ function Appbar({ children }) {
       >
         <div className={classes.toolbar}>
           <IconButton onClick={handleDrawerClose}>
-            {theme.direction === 'rtl' ? <ChevronRightIcon /> : <ChevronLeftIcon />}
+            {theme.direction === 'rtl' ? <ChevronRight /> : <ChevronLeft />}
           </IconButton>
         </div>
         <Divider />

@@ -38,9 +38,6 @@ module.exports = {
             id_usuario
         })
 
-        const id_projeto = idArray[0];
-
-    
         return response.status(201).send();
     },
 

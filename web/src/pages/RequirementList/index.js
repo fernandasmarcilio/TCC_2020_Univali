@@ -4,6 +4,7 @@ import PageDefault from '../PageDefault';
 import Header from '../../component/Header';
 import TableComponent from '../../component/TableComponent';
 import FormModal from '../../component/FormModal';
+import ModalDetails from '../../component/ModalDetails';
 
 import api from '../../services/api';
 
@@ -24,12 +25,31 @@ function RequirementList() {
   const [metrics, setMetrics] = useState([]);
   const [metricsSelected, setMetricsSelected] = useState([]);
   const [openModal, setOpenModal] = useState(false);
+  const [openDetails, setOpenDetails] = useState(false);
   const [idToEdit, setIdToEdit] = useState(0);
   const [openAlertSucess, setOpenAlertSucess] = useState(false);
 
   const handleClickOpenModal = () => {
     setOpenModal(!openModal);
   };
+
+  const handleClickOpenDetails = () => {
+    setOpenDetails(!openDetails);
+  };
+
+  const handleClickOnButtonView = async (id) => {
+    const requirement = await api.get(`requirements/${id}`);
+    const {nome, metricas } = requirement.data;
+
+    const formToEdit = {
+      name: nome
+    }
+
+    setMetricsSelected(metricas);
+    setForm(formToEdit);
+    setIdToEdit(id);
+    handleClickOpenDetails();
+  }
 
   const handleOnChangeInput = (e) => {
     const { name, value } = e.target;
@@ -104,19 +124,25 @@ function RequirementList() {
     handleClickOpenModal();
   }
 
+  const handleClickCancelOpenDetails = () => {
+    setForm(initialForm);
+    setIdToEdit(0);
+    setMetricsSelected([]);
+    handleClickOpenDetails();
+  }
+
 
   useEffect(() => {
     const user = localStorage.getItem('user');
     
     api.get(`user/${user}/requirements`)
     .then(response => {
-      console.log(response.data);
       setRequirements(response.data);
     })
 
     api.get(`user/${user}/metrics`)
       .then(response => {
-        console.log(response.data);
+
         setMetrics(response.data);
     });
   
@@ -159,15 +185,27 @@ function RequirementList() {
         handleClickOnCancel={handleClickOnCancel}
       />
 
+      <ModalDetails
+        open={openDetails}
+        handleClickOpenModal={handleClickOpenDetails}
+        handleClickOnCancel={handleClickCancelOpenDetails}
+        items={metricsSelected}
+        form={form}
+        titleItems={"Métricas de usabilidade"}
+      />
+
       <Header 
         title="Requisitos de Usabilidade"
-        handleClickOnButtonAdd={handleClickOpenModal}
+        onClick={handleClickOpenModal}
+        nameButton="Adicionar"
+        startIcon
       />
       <TableComponent 
         listItems={requirements} 
         route="requirements"
         handleClickOnButtonDelete={handleClickOnButtonDelete}  
         handleClickOnButtonEdit={handleClickOnButtonEdit}
+        handleClickOnButtonView={handleClickOnButtonView}
       />
 
     </PageDefault>

@@ -4,6 +4,7 @@ import PageDefault from '../PageDefault';
 import Header from '../../component/Header';
 import TableComponent from '../../component/TableComponent';
 import FormModal from '../../component/FormModal';
+import ModalDetails from '../../component/ModalDetails';
 
 import api from '../../services/api';
 
@@ -18,12 +19,38 @@ function MetricList() {
   const [methods, setMethods] = useState([]);
   const [methodsSelected, setMethodsSelected] = useState([]);
   const [openModal, setOpenModal] = useState(false);
+  const [openDetails, setOpenDetails] = useState(false);
   const [form, setForm] = useState(initialForm);
   const [idToEdit, setIdToEdit] = useState(0);
 
   const handleClickOpenModal = () => {
     setOpenModal(!openModal);
   };
+
+  const handleClickOpenDetails = () => {
+    setOpenDetails(!openDetails);
+  };
+
+  const handleClickOnButtonView = async (id) => {
+    const metric = await api.get(`metrics/${id}`);
+    const {nome, metodos } = metric.data;
+
+    const formToEdit = {
+      name: nome
+    }
+
+    setMethodsSelected(metodos);
+    setForm(formToEdit);
+    setIdToEdit(id);
+    handleClickOpenDetails();
+  }
+
+  const handleClickCancelOpenDetails = () => {
+    setForm(initialForm);
+    setIdToEdit(0);
+    setMethodsSelected([]);
+    handleClickOpenDetails();
+  }
 
   const handleOnChangeInput = (e) => {
     const { name, value } = e.target;
@@ -126,9 +153,20 @@ function MetricList() {
         handleClickOnCancel={handleClickOnCancel}
       />
 
+      <ModalDetails
+        open={openDetails}
+        handleClickOpenModal={handleClickOpenDetails}
+        handleClickOnCancel={handleClickCancelOpenDetails}
+        items={methodsSelected}
+        form={form}
+        titleItems={"Métodos de Avaliação de Usabilidade"}
+      />
+
       <Header
         title="Métricas de Usabilidade"
-        handleClickOnButtonAdd={handleClickOpenModal}
+        onClick={handleClickOpenModal}
+        nameButton="Adicionar"
+        startIcon
       />
 
       <TableComponent
@@ -136,6 +174,7 @@ function MetricList() {
         route="metrics"
         handleClickOnButtonDelete={handleClickOnButtonDelete}
         handleClickOnButtonEdit={handleClickOnButtonEdit}
+        handleClickOnButtonView={handleClickOnButtonView}
       />
 
     </PageDefault>

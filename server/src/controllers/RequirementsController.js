@@ -13,77 +13,119 @@ module.exports = {
 
     async show(request, response) {
         const { id } = request.params;
+        const trx = await db.transaction();
 
-        const requirementArray = await db('requisitos').select('*').where('id', id);
+        try {
+            const requirementArray = await trx('requisitos').select('*').where('id', id);
 
-        const metrics = await db('requisito_metrica')
-            .select('metricas.*')
-            .where('id_requisito', id)
-            .innerJoin('metricas', 'requisito_metrica.id_metrica', 'metricas.id')
+            const metrics = await trx('requisito_metrica')
+                .select('metricas.*')
+                .where('id_requisito', id)
+                .innerJoin('metricas', 'requisito_metrica.id_metrica', 'metricas.id')
 
-        const requirement = requirementArray[0];
+            const requirement = requirementArray[0];
 
-        const data = {...requirement, metricas: metrics}
+            const data = { ...requirement, metricas: metrics }
 
-        return response.json(data);
+            await trx.commit();
+
+            return response.json(data);
+
+
+        } catch (error) {
+            console.log(error);
+            await trx.rollback();
+            return res.status(400).json({
+                error: 'Unexpected error while show requirements'
+            })
+        }
     },
 
     async create(request, response) {
         const { nome, metricas, id_usuario } = request.body;
+        const trx = await db.transaction();
 
-        const idArray = await db('requisitos').insert({
-            nome,
-            id_usuario
-        });
+        try {
+            const idArray = await trx('requisitos').insert({
+                nome,
+                id_usuario
+            });
 
-        const id = idArray[0];
+            const id = idArray[0];
 
-        metricas.forEach(async (idMetrica) => {
-            console.log(idMetrica);
-            await db('requisito_metrica').insert({
-                id_requisito: id, 
-                id_metrica: idMetrica
+            for (const metrica of metricas) {
+                await trx('requisito_metrica').insert({
+                    id_requisito: id,
+                    id_metrica: metrica
+                })
+            }
+
+            await trx.commit();
+            return response.status(201).send({ id });
+        } catch (error) {
+            console.log(error);
+            await trx.rollback();
+            return res.status(400).json({
+                error: 'Unexpected error while create requirement'
             })
-        });
-
-        return response.status(201).send({ id });
+        }
     },
 
     async update(request, response) {
         const { nome, metricas } = request.body;
         const { id } = request.params
+        const trx = await db.transaction();
 
-        await db('requisitos')
-            .where('id', '=', id)
-            .update({
-                nome
+        try {
+            await trx('requisitos')
+                .where('id', '=', id)
+                .update({
+                    nome
+                })
+
+            await trx('requisito_metrica')
+                .where('id_requisito', id)
+                .delete();
+
+            for (const metrica of metricas) {
+                await trx('requisito_metrica').insert({
+                    id_requisito: id,
+                    id_metrica: metrica
+                })
+            }
+
+            await trx.commit();
+            return response.status(201).send();
+        } catch (error) {
+            console.log(error);
+            await trx.rollback();
+            return res.status(400).json({
+                error: 'Unexpected error while update requirement'
             })
-
-        await db('requisito_metrica')
-            .where('id_requisito', id)
-            .delete();
-
-        metricas.forEach(async (idMetrica) => {
-            await db('requisito_metrica').insert({
-                id_requisito: id, 
-                id_metrica: idMetrica
-            })
-        });
-
-        return response.status(201).send();
+        }
     },
 
     async delete(request, response) {
         const { id } = request.params;
+        const trx = await db.transaction();
 
-        await db('requisito_metrica')
-            .where('id_requisito', id)
-            .delete();
+        try {
+            await trx('requisito_metrica')
+                .where('id_requisito', id)
+                .delete();
 
-        await db('requisitos')
-            .where('id', id)
-            .delete();
-
-        return response.status(200).send();
+            await trx('requisitos')
+                .where('id', id)
+                .delete();
+            await trx.commit();
+            return response.status(200).send();
+            
+        } catch (error) {
+            console.log(error);
+            await trx.rollback();
+            return res.status(400).json({
+                error: 'Unexpected error while delete requirement'
+            })
+        }
     }
 }

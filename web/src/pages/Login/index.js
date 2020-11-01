@@ -53,9 +53,9 @@ function Login() {
 
                             <Button
                                 onClick={handleOnSubmit}
-                            >
-                                Entrar
-                        </Button>
+                                name="Entrar"
+                                fullWidth
+                            />
                         </form>
                     </div>
 

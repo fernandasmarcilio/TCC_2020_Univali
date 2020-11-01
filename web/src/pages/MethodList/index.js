@@ -4,6 +4,7 @@ import PageDefault from '../PageDefault';
 import Header from '../../component/Header';
 import TableComponent from '../../component/TableComponent';
 import FormModal from '../../component/FormModal';
+import ModalDetails from '../../component/ModalDetails';
 
 import api from '../../services/api';
 
@@ -17,12 +18,37 @@ function MethodList() {
 
     const [methods, setMethods] = useState([]);
     const [openModal, setOpenModal] = useState(false);
+    const [openDetails, setOpenDetails] = useState(false);
     const [form, setForm] = useState(initialForm);
     const [idToEdit, setIdToEdit] = useState(0);
 
     const handleClickOpenModal = () => {
         setOpenModal(!openModal);
     };
+
+    const handleClickOpenDetails = () => {
+        setOpenDetails(!openDetails);
+      };
+    
+    const handleClickOnButtonView = async (id) => {
+        const method = await api.get(`methods/${id}`);
+        const {nome, descricao } = method.data;
+
+        const formToEdit = {
+            name: nome,
+            description: descricao
+        }
+
+        setForm(formToEdit);
+        setIdToEdit(id);
+        handleClickOpenDetails();
+    }
+
+    const handleClickCancelOpenDetails = () => {
+        setForm(initialForm);
+        setIdToEdit(0);
+        handleClickOpenDetails();
+    }
 
     const handleOnChangeInput = (e) => {
         const { name, value } = e.target;
@@ -107,9 +133,19 @@ function MethodList() {
                 hasDescription
             />
 
+            <ModalDetails
+                open={openDetails}
+                handleClickOpenModal={handleClickOpenDetails}
+                handleClickOnCancel={handleClickCancelOpenDetails}
+                form={form}
+                titleItems={"Métricas de usabilidade"}
+            />
+
             <Header 
                 title="Métodos de Avaliação de Usabilidade"
-                handleClickOnButtonAdd={handleClickOpenModal}
+                onClick={handleClickOpenModal}
+                nameButton="Adicionar"
+                startIcon
             />
             
             <TableComponent 
@@ -117,6 +153,7 @@ function MethodList() {
                 route="methods"
                 handleClickOnButtonDelete={handleClickOnButtonDelete}
                 handleClickOnButtonEdit={handleClickOnButtonEdit}
+                handleClickOnButtonView={handleClickOnButtonView}
             />
 
         </PageDefault>
