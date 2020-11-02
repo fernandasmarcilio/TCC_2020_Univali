@@ -5,17 +5,14 @@ import { DragDropContext } from 'react-beautiful-dnd';
 
 import PageDefault from '../PageDefault';
 import Header from '../../component/Header';
-
-import api from '../../services/api';
-
 import Board from '../../component/Board';
 import Modal from './Modal';
 import TreeNav from '../../component/TreeNav';
+import AlertComponent from '../../component/AlertComponent';
 
-
-import { makeStyles } from '@material-ui/core/styles';
-
+import api from '../../services/api';
 import produce from 'immer';
+import { makeStyles } from '@material-ui/core/styles';
 
 const useStyle = makeStyles((theme) => ({
   boardContainer: {
@@ -37,8 +34,8 @@ function Project({ match }) {
   const classes = useStyle();
   const history = useHistory();
 
-  const [id, setId] = useState(match.params.id)
-  const [user, setUser] = useState(localStorage.getItem('user'));
+  const id = match.params.id;
+  const user = localStorage.getItem('user');
 
   const [nav, setNav] = useState({name: "", tree: []});
 
@@ -48,9 +45,9 @@ function Project({ match }) {
   const [requirements, setRequirements] = useState([]);
   const [requirementsWithStatus, setRequirementsWithStatus] = useState([]);
   const [requirementsWithoutStatus, setRequirementsWithoutStatus] = useState([]);
-
   const [project, setProject] = useState({});
   const [lists, setLists] = useState([]);
+  const [openAlert, setOpenAlert] = useState(false);
 
   const addRequirementsWithoutStatus = () => {
     let withoutStatus = [];
@@ -121,8 +118,8 @@ function Project({ match }) {
         addRequirementsWithoutStatus();
       })
 
+    handleOpenAlert(true);
     setChecked([]);
-
     handleClickOpenModal();
   }
 
@@ -154,6 +151,10 @@ function Project({ match }) {
 
   const handleClickButton = () => {
     history.push(`/projects/${id}/report`);
+  }
+
+  const handleOpenAlert = (open) => {
+    setOpenAlert(open);
   }
 
   useEffect(() => {
@@ -188,6 +189,13 @@ function Project({ match }) {
 
   return (
     <PageDefault>
+      <AlertComponent 
+        open={openAlert}
+        handleOpenAlertSucess={handleOpenAlert}
+        text="Requisito adicionado com sucesso ao board!"
+        type="success"
+      />
+
       <Modal
         open={openModal}
         handleClickOpenModal={handleClickOpenModal}

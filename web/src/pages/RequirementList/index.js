@@ -5,13 +5,9 @@ import Header from '../../component/Header';
 import TableComponent from '../../component/TableComponent';
 import FormModal from '../../component/FormModal';
 import ModalDetails from '../../component/ModalDetails';
+import AlertComponent from '../../component/AlertComponent';
 
 import api from '../../services/api';
-
-import Snackbar from '@material-ui/core/Snackbar';
-import Slide from '@material-ui/core/Slide';
-import Typography from '@material-ui/core/Typography';
-import Alert from '@material-ui/lab/Alert';
 
 const initialForm = {
   name: ""
@@ -27,7 +23,8 @@ function RequirementList() {
   const [openModal, setOpenModal] = useState(false);
   const [openDetails, setOpenDetails] = useState(false);
   const [idToEdit, setIdToEdit] = useState(0);
-  const [openAlertSucess, setOpenAlertSucess] = useState(false);
+  const [openAlert, setOpenAlert] = useState(false);
+  const [textAlert, setTextAlert] = useState("");
 
   const handleClickOpenModal = () => {
     setOpenModal(!openModal);
@@ -70,8 +67,8 @@ function RequirementList() {
     setMetricsSelected(event.target.value);
   };
 
-  const handleOpenAlertSucess = (open) => {
-    setOpenAlertSucess(open);
+  const handleOpenAlert = (open) => {
+    setOpenAlert(open);
   }
 
   const handleOnSubmit = async () => {
@@ -83,13 +80,15 @@ function RequirementList() {
 
     if(idToEdit){
       await api.put(`requirements/${idToEdit}`, data);
+      setTextAlert("Requisito alterado com sucesso!")
     } else {
       await api.post('requirements', data);
+      setTextAlert("Requisito salvo com sucesso!")
     }
 
     listRequirement();
 
-    handleOpenAlertSucess(true);
+    handleOpenAlert(true);
     
     handleClickOnCancel() ;
     handleClickOpenModal();
@@ -97,7 +96,8 @@ function RequirementList() {
 
   async function handleClickOnButtonDelete(id) {
     await api.delete(`requirements/${id}`);
-    
+    setTextAlert("Requisito excluido com sucesso!")
+    handleOpenAlert(true);
     listRequirement();
   }
 
@@ -150,25 +150,12 @@ function RequirementList() {
 
   return (
     <PageDefault>
-      <Snackbar 
-        open={openAlertSucess} 
-        autoHideDuration={6000} 
-        onClose={() => handleOpenAlertSucess(false)}
-        anchorOrigin={{
-          vertical: 'bottom',
-          horizontal: 'left',
-        }}
-        TransitionComponent={(props) => (
-          <Slide {...props} direction="left" />
-        )
-        }
-      >
-        <Alert onClose={() => handleOpenAlertSucess(false)} variant="filled" severity="success" elevation={6}>
-          <Typography variant="h5" gutterBottom>
-            Requisito salvo com sucesso!
-          </Typography>
-        </Alert>
-      </Snackbar>
+      <AlertComponent 
+        open={openAlert}
+        handleOpenAlertSucess={handleOpenAlert}
+        text={textAlert}
+        type="success"
+      />
 
       <FormModal
         open={openModal}

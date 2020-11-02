@@ -5,6 +5,7 @@ import PageDefault from '../PageDefault';
 import Header from '../../component/Header';
 import TableComponent from '../../component/TableComponent';
 import FormModal from '../../component/FormModal';
+import AlertComponent from '../../component/AlertComponent';
 
 import api from '../../services/api';
 
@@ -21,6 +22,8 @@ function ProjectList() {
   const [openModal, setOpenModal] = useState(false);
   const [form, setForm] = useState(initialForm);
   const [idToEdit, setIdToEdit] = useState(0);
+  const [openAlert, setOpenAlert] = useState(false);
+  const [textAlert, setTextAlert] = useState("");
   
   const handleClickOpenModal = () => {
     setOpenModal(!openModal);
@@ -42,8 +45,10 @@ function ProjectList() {
 
     if(idToEdit){
       await api.put(`projects/${idToEdit}`, data);
+      setTextAlert("Projeto alterado com sucesso!");
     } else {
       await api.post(`projects?id_usuario=${user}`, data);
+      setTextAlert("Projeto salvo com sucesso!");
     }
 
     await api.get(`projects?id_usuario=${user}`)
@@ -51,6 +56,7 @@ function ProjectList() {
         setProjects(response.data);
       })
 
+    handleOpenAlert(true);
     handleClickOnCancel(); 
     handleClickOpenModal();
   };
@@ -64,6 +70,9 @@ function ProjectList() {
     .then(response => {
       setProjects(response.data);
     })
+
+    setTextAlert("Projeto excluido com sucesso!");
+    handleOpenAlert(true);
   }
 
   async function handleClickOnButtonEdit(id) {
@@ -90,6 +99,10 @@ function ProjectList() {
     handleClickOpenModal();
   }
 
+  const handleOpenAlert = (open) => {
+    setOpenAlert(open);
+  }
+
   useEffect(() => {
     const user = localStorage.getItem('user')
     api.get(`projects?id_usuario=${user}`)
@@ -100,6 +113,12 @@ function ProjectList() {
 
   return (
     <PageDefault>
+      <AlertComponent 
+        open={openAlert}
+        handleOpenAlertSucess={handleOpenAlert}
+        text={textAlert}
+        type="success"
+      />
 
       <FormModal 
         open={openModal} 

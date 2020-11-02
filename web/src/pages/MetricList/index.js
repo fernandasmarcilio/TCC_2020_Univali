@@ -5,6 +5,7 @@ import Header from '../../component/Header';
 import TableComponent from '../../component/TableComponent';
 import FormModal from '../../component/FormModal';
 import ModalDetails from '../../component/ModalDetails';
+import AlertComponent from '../../component/AlertComponent';
 
 import api from '../../services/api';
 
@@ -22,6 +23,8 @@ function MetricList() {
   const [openDetails, setOpenDetails] = useState(false);
   const [form, setForm] = useState(initialForm);
   const [idToEdit, setIdToEdit] = useState(0);
+  const [openAlert, setOpenAlert] = useState(false);
+  const [textAlert, setTextAlert] = useState("");
 
   const handleClickOpenModal = () => {
     setOpenModal(!openModal);
@@ -80,12 +83,15 @@ function MetricList() {
 
     if(idToEdit){
       await api.put(`metrics/${idToEdit}`, data);
+      setTextAlert("Métrica alterada com sucesso!")
     } else {
       await api.post('metrics', data);
+      setTextAlert("Métrica salva com sucesso!")
     }
 
     listMetric();
 
+    handleOpenAlert(true);
     handleClickOnCancel(); 
     handleClickOpenModal();
   };
@@ -94,6 +100,8 @@ function MetricList() {
     await api.delete(`metrics/${id}`);
 
     listMetric();
+    setTextAlert("Métrica excluida com sucesso!" )
+    handleOpenAlert(true);
   }
 
   async function handleClickOnButtonEdit(id) {
@@ -120,6 +128,9 @@ function MetricList() {
     handleClickOpenModal();
   }
 
+  const handleOpenAlert = (open) => {
+    setOpenAlert(open);
+  }
 
   useEffect(() => {
     const user = localStorage.getItem('user');
@@ -137,6 +148,12 @@ function MetricList() {
 
   return (
     <PageDefault>
+      <AlertComponent 
+        open={openAlert}
+        handleOpenAlertSucess={handleOpenAlert}
+        text={textAlert}
+        type="success"
+      />
 
       <FormModal
         open={openModal}

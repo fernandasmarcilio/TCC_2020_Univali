@@ -41,7 +41,6 @@ routes.get('/projects/:id/status', StatusController.index);
 routes.get('/projects/status/:id', StatusController.show);
 routes.post('/projects/:id/status', StatusController.create);
 routes.put('/projects/:idProject/status/:idStatus', StatusController.update);
-//routes.delete('/projects/status/:id', StatusController.delete);
 
 
 
